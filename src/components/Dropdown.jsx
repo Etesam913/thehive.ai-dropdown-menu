@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, memo } from "react";
 import styled from "styled-components";
 import DropdownMenu from "./DropdownMenu";
 
@@ -12,34 +12,40 @@ function Dropdown({
   ],
   multiSelect = false,
   placeholderText = "✨ This is some placeholder text",
+  width = "18rem",
+  selectedDropdownItems = [],
+  setSelectedDropdownItems = null,
+  labelText = "This is a Dropdown Menu!",
 }) {
   const [dropdownItems, setDropdownItems] = useState(
     items.map((itemText, index) => ({ id: index, text: itemText }))
   );
   const [isDropdownShowing, setIsDropdownShowing] = useState(false);
-  const [selectedDropdownItems, setSelectedDropdownItems] = useState([]);
   const uniqueIdentifier = uuidv4();
   const dropdownButton = useRef(null);
 
   useEffect(() => {
-    if (isDropdownShowing) {
-      const firstDropdownElement = document.getElementById(
-        `dropdown-button-${uniqueIdentifier}-0`
-      );
-      if (firstDropdownElement) firstDropdownElement.focus();
-    }
+    if (isDropdownShowing) focusOnFirstDropdownItem(uniqueIdentifier);
   }, [isDropdownShowing]);
 
   return (
     <div>
+      <DropdownLabel htmlFor={`dropdown-${uniqueIdentifier}`}>
+        {labelText}
+      </DropdownLabel>
       <DropdownButton
+        id={`dropdown-${uniqueIdentifier}`}
         onClick={() => setIsDropdownShowing(!isDropdownShowing)}
         data-bs-toggle="dropdown"
         ref={dropdownButton}
+        width={width}
+        onKeyDown={(e) =>
+          e.key === "ArrowDown" && focusOnFirstDropdownItem(uniqueIdentifier)
+        }
       >
         {selectedDropdownItems.length === 0
           ? placeholderText
-          : setDropdownItems.join(", ")}
+          : selectedDropdownItems.map((item) => item.text).join(", ")}
         <DownCaret isDropdownShowing={isDropdownShowing} />
       </DropdownButton>
       {isDropdownShowing && (
@@ -50,6 +56,8 @@ function Dropdown({
           direction={direction}
           uniqueIdentifier={uniqueIdentifier}
           dropdownButton={dropdownButton}
+          setIsDropdownShowing={setIsDropdownShowing}
+          multiSelect={multiSelect}
         />
       )}
     </div>
@@ -63,10 +71,17 @@ const DropdownButton = styled.button`
   border-radius: 0.5rem;
   display: flex;
   align-items: center;
-  width: auto;
+  justify-content: space-between;
+  width: ${(props) => props.width};
   :focus-within {
     outline: 3.5px solid #53a8d295;
   }
+`;
+const DropdownLabel = styled.label`
+  font-size: 1.15rem;
+  display: block;
+  padding: 0.3rem 0;
+  cursor: pointer;
 `;
 
 const DownCaret = ({ isDropdownShowing }) => {
@@ -101,4 +116,11 @@ function uuidv4() {
   );
 }
 
-export default Dropdown;
+function focusOnFirstDropdownItem(uniqueIdentifier) {
+  const firstDropdownElement = document.getElementById(
+    `dropdown-button-${uniqueIdentifier}-0`
+  );
+  if (firstDropdownElement) firstDropdownElement.focus();
+}
+
+export default memo(Dropdown);
