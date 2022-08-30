@@ -37,10 +37,6 @@ function DropdownMenu({
         copyOfSelectedItems.splice(selectedItemIndex, 1);
         setSelectedDropdownItems(copyOfSelectedItems);
       }
-
-      const currentElement = document.getElementById(
-        `dropdown-button-${uniqueIdentifier}-${currentItem.id}`
-      );
     } else {
       setSelectedDropdownItems([currentItem]);
       setIsDropdownShowing(false);
@@ -49,8 +45,9 @@ function DropdownMenu({
     if (dropdownButton) dropdownButton.current.focus();
   }
 
-  function handleMenuKeyDown(keyCode = "", currentIndex = 0) {
+  function handleMenuKeyDown(e, keyCode = "", currentIndex = 0) {
     if (keyCode === "ArrowUp") {
+      e.preventDefault();
       const previousElement = document.getElementById(
         `dropdown-button-${uniqueIdentifier}-${currentIndex - 1}`
       );
@@ -59,6 +56,7 @@ function DropdownMenu({
       const nextElement = document.getElementById(
         `dropdown-button-${uniqueIdentifier}-${currentIndex + 1}`
       );
+      e.preventDefault();
       if (nextElement) nextElement.focus();
     } else if (keyCode === "Escape") {
       setIsDropdownShowing(false);
@@ -69,7 +67,7 @@ function DropdownMenu({
   const menuItems = dropdownItems.map((item) => {
     return (
       <MenuItem
-        onKeyDown={(e) => handleMenuKeyDown(e.key, item.id)}
+        onKeyDown={(e) => handleMenuKeyDown(e, e.key, item.id)}
         key={`dropdown-item-${uniqueIdentifier}-${item.id}`}
       >
         <MenuButton

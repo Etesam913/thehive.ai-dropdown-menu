@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, memo } from "react";
 import styled from "styled-components";
+import useOnClickOutside from "../hooks/useOnClickOutside";
 import DropdownMenu from "./DropdownMenu";
 
 function Dropdown({
@@ -17,19 +18,24 @@ function Dropdown({
   setSelectedDropdownItems = null,
   labelText = "This is a Dropdown Menu!",
 }) {
-  const [dropdownItems, setDropdownItems] = useState(
-    items.map((itemText, index) => ({ id: index, text: itemText }))
-  );
+  const dropdownItems = items.map((itemText, index) => ({
+    id: index,
+    text: itemText,
+  }));
+
   const [isDropdownShowing, setIsDropdownShowing] = useState(false);
   const uniqueIdentifier = uuidv4();
+  const dropdownWrapper = useRef(null);
   const dropdownButton = useRef(null);
+
+  useOnClickOutside(dropdownWrapper, () => setIsDropdownShowing(false));
 
   useEffect(() => {
     if (isDropdownShowing) focusOnFirstDropdownItem(uniqueIdentifier);
   }, [isDropdownShowing]);
 
   return (
-    <div>
+    <div ref={dropdownWrapper}>
       <DropdownLabel htmlFor={`dropdown-${uniqueIdentifier}`}>
         {labelText}
       </DropdownLabel>
