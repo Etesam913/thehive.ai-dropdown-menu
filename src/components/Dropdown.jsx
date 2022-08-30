@@ -4,12 +4,11 @@ import useOnClickOutside from "../hooks/useOnClickOutside";
 import DropdownMenu from "./DropdownMenu";
 
 function Dropdown({
-  direction = "down",
   items = [
     "🦖 This is a T-Rex!",
     "🐶 This is a dog!",
     "🐱 This is a cat!",
-    "🍅 This is a tomato",
+    "🍅 This is a tomato!",
   ],
   multiSelect = false,
   placeholderText = "✨ This is some placeholder text",
@@ -17,7 +16,7 @@ function Dropdown({
   maxHeight = "20rem",
   selectedDropdownItems = [],
   setSelectedDropdownItems = null,
-  labelText = "This is a Dropdown Menu!",
+  labelText = "",
 }) {
   const dropdownItems = items.map((itemText, index) => ({
     id: index + 1,
@@ -56,9 +55,12 @@ function Dropdown({
 
   return (
     <div ref={dropdownWrapper}>
-      <DropdownLabel htmlFor={`dropdown-${uniqueIdentifier}`}>
-        {labelText}
-      </DropdownLabel>
+      {labelText.length > 0 && (
+        <DropdownLabel htmlFor={`dropdown-${uniqueIdentifier}`}>
+          {labelText}
+        </DropdownLabel>
+      )}
+
       <DropdownButton
         id={`dropdown-${uniqueIdentifier}`}
         onClick={() => setIsDropdownShowing(!isDropdownShowing)}
@@ -77,7 +79,6 @@ function Dropdown({
           dropdownItems={dropdownItems}
           selectedDropdownItems={selectedDropdownItems}
           setSelectedDropdownItems={setSelectedDropdownItems}
-          direction={direction}
           uniqueIdentifier={uniqueIdentifier}
           dropdownButton={dropdownButton}
           setIsDropdownShowing={setIsDropdownShowing}

@@ -16,7 +16,7 @@ function App() {
             "🦖 This is a T-Rex!",
             "🐶 This is a dog!",
             "🐱 This is a cat!",
-            "🍅 This is a tomato",
+            "🍅 This is a tomato!",
           ]}
         />
       </div>
@@ -30,12 +30,12 @@ function App() {
             "🦖 This is a T-Rex!",
             "🐶 This is a dog!",
             "🐱 This is a cat!",
-            "🍅 This is a tomato",
-            "🫐 This is a blueberry",
-            "🍌 This is a banana",
-            "🍊 This is an orange",
-            "🍎 This is an apple",
-            "🥑 This is an avocado",
+            "🍅 This is a tomato!",
+            "🫐 This is a blueberry!",
+            "🍌 This is a banana!",
+            "🍊 This is an orange!",
+            "🍎 This is an apple!",
+            "🥑 This is an avocado!",
           ]}
         />
       </div>
