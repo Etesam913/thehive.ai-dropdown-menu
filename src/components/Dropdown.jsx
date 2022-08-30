@@ -14,12 +14,13 @@ function Dropdown({
   multiSelect = false,
   placeholderText = "✨ This is some placeholder text",
   width = "18rem",
+  maxHeight = "20rem",
   selectedDropdownItems = [],
   setSelectedDropdownItems = null,
   labelText = "This is a Dropdown Menu!",
 }) {
   const dropdownItems = items.map((itemText, index) => ({
-    id: index,
+    id: index + 1,
     text: itemText,
   }));
 
@@ -64,6 +65,7 @@ function Dropdown({
           dropdownButton={dropdownButton}
           setIsDropdownShowing={setIsDropdownShowing}
           multiSelect={multiSelect}
+          maxHeight={maxHeight}
         />
       )}
     </div>

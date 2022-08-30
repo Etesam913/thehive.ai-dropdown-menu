@@ -6,21 +6,39 @@ function App() {
   const [selectedDropdownItems2, setSelectedDropdownItems2] = useState([]);
   return (
     <AppContainer>
-      <span style={{ margin: "0 0.5rem" }}>
+      <div style={{ margin: "0 0.5rem" }}>
         <Dropdown
           selectedDropdownItems={selectedDropdownItems1}
           setSelectedDropdownItems={setSelectedDropdownItems1}
           labelText="Regular Dropdown Menu"
+          placeholderText="This is placeholder text"
+          items={[
+            "🦖 This is a T-Rex!",
+            "🐶 This is a dog!",
+            "🐱 This is a cat!",
+            "🍅 This is a tomato",
+          ]}
         />
-      </span>
-      <span style={{ margin: "0 0.5rem" }}>
+      </div>
+      <div style={{ margin: "0 0.5rem" }}>
         <Dropdown
           selectedDropdownItems={selectedDropdownItems2}
           setSelectedDropdownItems={setSelectedDropdownItems2}
           multiSelect
           labelText="Dropdown Menu With Multi-Select"
+          items={[
+            "🦖 This is a T-Rex!",
+            "🐶 This is a dog!",
+            "🐱 This is a cat!",
+            "🍅 This is a tomato",
+            "🫐 This is a blueberry",
+            "🍌 This is a banana",
+            "🍊 This is an orange",
+            "🍎 This is an apple",
+            "🥑 This is an avocado",
+          ]}
         />
-      </span>
+      </div>
     </AppContainer>
   );
 }
@@ -32,7 +50,7 @@ const AppContainer = styled.div`
   justify-content: center;
   align-items: flex-start;
   flex-wrap: wrap;
-  margin-top: 10rem;
+  align-items: center;
 `;
 
 export default App;

@@ -1,16 +1,16 @@
 import styled, { keyframes } from "styled-components";
 import { useEffect, useState } from "react";
-import DropdownCheckbox from "./Checkbox";
+import DropdownItem from "./DropdownItem";
 
 function DropdownMenu({
   dropdownItems = [],
   selectedDropdownItems = [],
   setSelectedDropdownItems,
   dropdownButton = null,
-  direction = "down",
   multiSelect = false,
   uniqueIdentifier = "",
   setIsDropdownShowing,
+  maxHeight = "20rem",
 }) {
   const [menuWidth, setMenuWidth] = useState("15rem");
 
@@ -19,77 +19,56 @@ function DropdownMenu({
       setMenuWidth(dropdownButton.current.clientWidth + "px");
     }
   }, [dropdownButton, setMenuWidth]);
-
-  function handleMenuButtonClick(currentItem) {
-    if (multiSelect) {
-      const copyOfSelectedItems = [...selectedDropdownItems];
-      const selectedItemIndex = copyOfSelectedItems.findIndex(
-        (item) => item.id === currentItem.id
-      );
-
-      // The item is not selected, so select it
-      if (selectedItemIndex === -1) {
-        copyOfSelectedItems.push(currentItem);
-        setSelectedDropdownItems(copyOfSelectedItems);
-      }
-      // The item is already selected, so unselect it
-      else {
-        copyOfSelectedItems.splice(selectedItemIndex, 1);
-        setSelectedDropdownItems(copyOfSelectedItems);
-      }
-    } else {
-      setSelectedDropdownItems([currentItem]);
-      setIsDropdownShowing(false);
-    }
-
-    if (dropdownButton) dropdownButton.current.focus();
-  }
-
-  function handleMenuKeyDown(e, keyCode = "", currentIndex = 0) {
-    if (keyCode === "ArrowUp") {
-      e.preventDefault();
-      const previousElement = document.getElementById(
-        `dropdown-button-${uniqueIdentifier}-${currentIndex - 1}`
-      );
-      if (previousElement) previousElement.focus();
-    } else if (keyCode === "ArrowDown") {
-      const nextElement = document.getElementById(
-        `dropdown-button-${uniqueIdentifier}-${currentIndex + 1}`
-      );
-      e.preventDefault();
-      if (nextElement) nextElement.focus();
-    } else if (keyCode === "Escape") {
-      setIsDropdownShowing(false);
-      if (dropdownButton) dropdownButton.current.focus();
-    }
-  }
-
+  const areAllItemsSelected =
+    selectedDropdownItems.length === dropdownItems.length;
   const menuItems = dropdownItems.map((item) => {
     return (
-      <MenuItem
-        onKeyDown={(e) => handleMenuKeyDown(e, e.key, item.id)}
-        key={`dropdown-item-${uniqueIdentifier}-${item.id}`}
-      >
-        <MenuButton
-          id={`dropdown-button-${uniqueIdentifier}-${item.id}`}
-          onClick={() => handleMenuButtonClick(item)}
-        >
-          {multiSelect && (
-            <DropdownCheckbox
-              isChecked={
-                selectedDropdownItems.findIndex(
-                  (selectedItem) => selectedItem.id === item.id
-                ) !== -1
-              }
-            />
-          )}
-          {item.text}
-        </MenuButton>
-      </MenuItem>
+      <DropdownItem
+        item={item}
+        uniqueIdentifier={uniqueIdentifier}
+        setIsDropdownShowing={setIsDropdownShowing}
+        multiSelect={multiSelect}
+        selectedDropdownItems={selectedDropdownItems}
+        setSelectedDropdownItems={setSelectedDropdownItems}
+        dropdownButton={dropdownButton}
+      />
     );
   });
 
-  return <Menu width={menuWidth}>{menuItems}</Menu>;
+  function selectAllItems() {
+    if (!areAllItemsSelected) {
+      const newSelectedItems = [];
+      for (let i = 0; i < dropdownItems.length; i++) {
+        newSelectedItems.push(dropdownItems[i]);
+      }
+      setSelectedDropdownItems(newSelectedItems);
+    } else {
+      setSelectedDropdownItems([]);
+    }
+  }
+
+  return (
+    <Menu maxHeight={maxHeight} width={menuWidth}>
+      {multiSelect && (
+        <DropdownItem
+          item={{
+            id: 0,
+            text: areAllItemsSelected ? "Unselect All" : "Select All",
+          }}
+          handleClick={selectAllItems}
+          isChecked={areAllItemsSelected}
+          uniqueIdentifier={uniqueIdentifier}
+          setIsDropdownShowing={setIsDropdownShowing}
+          multiSelect={multiSelect}
+          selectedDropdownItems={selectedDropdownItems}
+          setSelectedDropdownItems={setSelectedDropdownItems}
+          dropdownButton={dropdownButton}
+        />
+      )}
+
+      {menuItems}
+    </Menu>
+  );
 }
 
 const menuFadeIn = keyframes`
@@ -110,30 +89,8 @@ const Menu = styled.ul`
   transform: translateY(0.15rem);
   box-shadow: 10px 10px 88px -37px rgba(0, 0, 0, 0.48);
   animation: ${menuFadeIn} 150ms ease-in-out;
-`;
-
-const MenuItem = styled.li``;
-
-const MenuButton = styled.button`
-  border: 0;
-  background: transparent;
-  padding: 0.5rem 0.65rem;
-  border-radius: 0.5rem;
-  width: 100%;
-  text-align: left;
-  transition: background-color 100ms ease-in-out;
-  position: relative;
-  display: flex;
-  align-items: center;
-  :focus-within {
-    outline: 3.5px solid #53a8d295;
-    z-index: 2;
-  }
-
-  :hover {
-    background-color: #e3e3e3;
-    transition: background-color 100ms ease-in-out;
-  }
+  overflow-y: auto;
+  max-height: ${(props) => props.maxHeight};
 `;
 
 export default DropdownMenu;
