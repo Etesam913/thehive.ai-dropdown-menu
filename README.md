@@ -1,5 +1,9 @@
 # thehive.ai-dropdown-menu
 
+The dropdown menu can be seen in this codesandbox: https://codesandbox.io/s/thehive-ai-dropdown-menu-0vgnbg
+
+You can run it locally instead by following the below commands:
+
 ## 📦 Setup
 
 To run the project you will first have to install the dependencies by running:
