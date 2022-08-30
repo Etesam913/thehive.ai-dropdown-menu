@@ -25,7 +25,13 @@ function Dropdown({
   }));
 
   const [isDropdownShowing, setIsDropdownShowing] = useState(false);
+
+  /*
+    This is important when there are two instances of 
+    this component on the page
+  */
   const uniqueIdentifier = uuidv4();
+
   const dropdownWrapper = useRef(null);
   const dropdownButton = useRef(null);
 
@@ -34,6 +40,19 @@ function Dropdown({
   useEffect(() => {
     if (isDropdownShowing) focusOnFirstDropdownItem(uniqueIdentifier);
   }, [isDropdownShowing]);
+
+  /* 
+    Handles key controls for the dropdown button
+  */
+  function handleDropdownButtonKeyDown(e) {
+    if (e.key === "ArrowDown") {
+      if (isDropdownShowing) {
+        focusOnFirstDropdownItem(uniqueIdentifier);
+      } else {
+        setIsDropdownShowing(true);
+      }
+    }
+  }
 
   return (
     <div ref={dropdownWrapper}>
@@ -46,9 +65,7 @@ function Dropdown({
         data-bs-toggle="dropdown"
         ref={dropdownButton}
         width={width}
-        onKeyDown={(e) =>
-          e.key === "ArrowDown" && focusOnFirstDropdownItem(uniqueIdentifier)
-        }
+        onKeyDown={handleDropdownButtonKeyDown}
       >
         {selectedDropdownItems.length === 0
           ? placeholderText
@@ -92,6 +109,7 @@ const DropdownLabel = styled.label`
   cursor: pointer;
 `;
 
+// The triangle that animates in the dropdown button
 const DownCaret = ({ isDropdownShowing }) => {
   return (
     <DownCaretSvg
@@ -115,6 +133,7 @@ const DownCaretSvg = styled.svg`
   transition: transform 200ms ease-in-out;
 `;
 
+/* Creates an unique id for the dropdown component */
 function uuidv4() {
   return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
     (
@@ -124,10 +143,15 @@ function uuidv4() {
   );
 }
 
+/*
+  Focuses on the first dropdown button.
+  This is done for accessibility purposes
+*/
 function focusOnFirstDropdownItem(uniqueIdentifier) {
   const firstDropdownElement = document.getElementById(
     `dropdown-button-${uniqueIdentifier}-0`
   );
+
   if (firstDropdownElement) firstDropdownElement.focus();
 }
 

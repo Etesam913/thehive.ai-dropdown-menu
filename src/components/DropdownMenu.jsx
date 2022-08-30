@@ -14,13 +14,19 @@ function DropdownMenu({
 }) {
   const [menuWidth, setMenuWidth] = useState("15rem");
 
+  /*
+  This exists to ensure that the dropdown width
+  is equal to the dropdown button width.
+  */
   useEffect(() => {
     if (dropdownButton) {
       setMenuWidth(dropdownButton.current.clientWidth + "px");
     }
-  }, [dropdownButton, setMenuWidth]);
+  }, [dropdownButton, setMenuWidth, selectedDropdownItems]);
+
   const areAllItemsSelected =
     selectedDropdownItems.length === dropdownItems.length;
+
   const menuItems = dropdownItems.map((item) => {
     return (
       <DropdownItem
@@ -35,6 +41,10 @@ function DropdownMenu({
     );
   });
 
+  /*
+    If all options are selected, then unselect the options.
+    Otherwise, select all the options
+  */
   function selectAllItems() {
     if (!areAllItemsSelected) {
       const newSelectedItems = [];
@@ -49,6 +59,7 @@ function DropdownMenu({
 
   return (
     <Menu maxHeight={maxHeight} width={menuWidth}>
+      {/* This is the select all button */}
       {multiSelect && (
         <DropdownItem
           item={{
@@ -59,7 +70,7 @@ function DropdownMenu({
           isChecked={areAllItemsSelected}
           uniqueIdentifier={uniqueIdentifier}
           setIsDropdownShowing={setIsDropdownShowing}
-          multiSelect={multiSelect}
+          multiSelect={true}
           selectedDropdownItems={selectedDropdownItems}
           setSelectedDropdownItems={setSelectedDropdownItems}
           dropdownButton={dropdownButton}

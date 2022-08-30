@@ -12,6 +12,10 @@ function DropdownItem({
   isChecked = null,
   handleClick = null,
 }) {
+  /*
+    Handles keyboard controls for dropdown items
+    Done to improve accessibility
+  */
   function handleMenuKeyDown(e, keyCode = "", currentIndex = 0) {
     if (keyCode === "ArrowUp") {
       e.preventDefault();
@@ -41,18 +45,20 @@ function DropdownItem({
       if (handleClick) {
         handleClick();
       } else {
-        // The item is not selected, so select it
+        // The option is not selected, so select it
         if (selectedItemIndex === -1) {
           copyOfSelectedItems.push(currentItem);
           setSelectedDropdownItems(copyOfSelectedItems);
         }
-        // The item is already selected, so unselect it
+        // The option is already selected, so unselect it
         else {
           copyOfSelectedItems.splice(selectedItemIndex, 1);
           setSelectedDropdownItems(copyOfSelectedItems);
         }
       }
-    } else {
+    }
+    // When multiselect is false, there can only be one option selected
+    else {
       setSelectedDropdownItems([currentItem]);
       setIsDropdownShowing(false);
     }
@@ -61,7 +67,7 @@ function DropdownItem({
   }
 
   return (
-    <MenuItem
+    <li
       onKeyDown={(e) => handleMenuKeyDown(e, e.key, item.id)}
       key={`dropdown-item-${uniqueIdentifier}-${item.id}`}
     >
@@ -83,11 +89,9 @@ function DropdownItem({
         )}
         {item.text}
       </MenuButton>
-    </MenuItem>
+    </li>
   );
 }
-
-const MenuItem = styled.li``;
 
 const MenuButton = styled.button`
   border: 0;
@@ -99,6 +103,7 @@ const MenuButton = styled.button`
   transition: background-color 100ms ease-in-out;
   position: relative;
   display: flex;
+
   align-items: center;
   :focus-within {
     outline: 3.5px solid #53a8d295;
